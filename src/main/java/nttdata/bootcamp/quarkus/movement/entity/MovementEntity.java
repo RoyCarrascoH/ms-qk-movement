@@ -17,9 +17,8 @@ public class MovementEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idMovement;
-    private String account;
-    private int numberMovement;
-    private String movementType;
-    private double amount;
-    private String movementDate;
+    private int idTypeMovement;
+    private String descriptionMovement;
+    private String dateMovement;
+    private double totalMovement;
 }
