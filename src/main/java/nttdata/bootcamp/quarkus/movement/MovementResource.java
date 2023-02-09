@@ -38,21 +38,6 @@ public class MovementResource {
         service.save(movement);
         return Response.ok(movement).status(201).build();
     }
-    @PUT
-    @Path("{idClient}")
-    @Transactional
-    public MovementEntity updateClient(@PathParam("idClient") Long idClient, MovementEntity movement) {
-        if (movement.getIdMovement() == null) {
-            throw new WebApplicationException("Client person type was not set on request.", 422);
-        }
-        MovementEntity entity = service.findById(idClient);
-        if (entity == null) {
-            throw new WebApplicationException("Client with id of " + idClient + " does not exist.", 404);
-        }
-
-        //entity = Utilitarios.saveClient(entity, client);
-        return entity;
-    }
     @DELETE
     @Path("{idMovement}")
     @Transactional
@@ -63,5 +48,26 @@ public class MovementResource {
         }
         service.delete(entity.getIdMovement());
         return Response.status(204).build();
+    }
+
+    @PUT
+    @Path("{idMovent}")
+    @Transactional
+    public MovementEntity updateMovement(@PathParam("idMovent") Long idMovent, MovementEntity movent) {
+
+        MovementEntity entity = service.findById(idMovent);
+        if (entity == null) {
+            throw new WebApplicationException("Movent with id of " + idMovent + " does not exist.", 404);
+        }
+
+        entity.setAccount(movent.getAccount());
+        entity.setNumberMovement(movent.getNumberMovement());
+        entity.setMovementType(movent.getMovementType());
+        entity.setAmount(movent.getAmount());
+        entity.setMovementDate(movent.getMovementDate());
+
+        service.save(entity);
+
+        return entity;
     }
 }
