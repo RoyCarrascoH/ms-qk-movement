@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Cacheable
-@Table(name = "MOVEMENTS")
+@Table(name = "movements")
 public class MovementEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

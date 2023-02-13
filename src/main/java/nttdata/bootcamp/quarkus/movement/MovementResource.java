@@ -25,54 +25,57 @@ public class MovementResource {
 
     @RestClient
     CreditCardClient creditCardClient;
+
     @GET
     public MovementResponse getMovements() {
         MovementResponse movementResponse = new MovementResponse();
-        List<MovementEntity>movemnt = service.listAll();
-        if(movemnt==null){
+        List<MovementEntity> movemnt = service.listAll();
+        if (movemnt == null) {
             movementResponse.setCodigoRespuesta(2);
             movementResponse.setMensajeRespuesta("Respuesta nula");
             movementResponse.setMovement(null);
-        }
-        else if(movemnt.size()==0){
+        } else if (movemnt.size() == 0) {
             movementResponse.setCodigoRespuesta(1);
             movementResponse.setMensajeRespuesta("No existen clientes");
             movementResponse.setMovement(movemnt);
-        }else{
+        } else {
             movementResponse.setCodigoRespuesta(0);
             movementResponse.setMensajeRespuesta("Respuesta Exitosa");
             movementResponse.setMovement(movemnt);
         }
         return movementResponse;
     }
+
     @GET
     @Path("{idMovement}")
-    public MovementEntity viewClientDetails(@PathParam("idMovement") Long idMovement) {
+    public MovementEntity viewMovementDetails(@PathParam("idMovement") Long idMovement) {
         MovementEntity entity = service.findById(idMovement);
         if (entity == null) {
             throw new WebApplicationException("Movement with id of " + idMovement + " does not exist.", 404);
         }
         return entity;
     }
+
     @POST
     @Transactional
     public Response create(MovementEntity movement) {
 
-        if(movement.getIdTypeMovement() == 3){
+        if (movement.getIdTypeMovement() == 3) {
             CreditCardEntity entity = creditCardClient.viewClientDetails(movement.getCreditCard().getIdCreditCard());
-            double total= entity.getBalanceAvailable()-movement.getTotalMovement();
+            double total = entity.getBalanceAvailable() - movement.getTotalMovement();
             entity.setBalanceAvailable(total);
-            creditCardClient.updateCreditCard(entity.getIdCreditCard(),entity);
-        }else if(movement.getIdTypeMovement()== 2){
+            creditCardClient.updateCreditCard(entity.getIdCreditCard(), entity);
+        } else if (movement.getIdTypeMovement() == 2) {
             CreditCardEntity entity = creditCardClient.viewClientDetails(movement.getCreditCard().getIdCreditCard());
-            double total= entity.getBalanceAvailable()+movement.getTotalMovement();
+            double total = entity.getBalanceAvailable() + movement.getTotalMovement();
             entity.setBalanceAvailable(total);
-            creditCardClient.updateCreditCard(entity.getIdCreditCard(),entity);
+            creditCardClient.updateCreditCard(entity.getIdCreditCard(), entity);
         }
 
         service.save(movement);
         return Response.ok(movement).status(201).build();
     }
+
     @DELETE
     @Path("{idMovement}")
     @Transactional
