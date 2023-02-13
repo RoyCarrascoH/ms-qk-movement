@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import nttdata.bootcamp.quarkus.movement.client.CreditCardClient;
 import nttdata.bootcamp.quarkus.movement.dto.MovementResponse;
+import nttdata.bootcamp.quarkus.movement.dto.ResponseBase;
 import nttdata.bootcamp.quarkus.movement.entity.CreditCardEntity;
 import nttdata.bootcamp.quarkus.movement.entity.MovementEntity;
 import nttdata.bootcamp.quarkus.movement.service.MovementService;
@@ -36,7 +37,7 @@ public class MovementResource {
             movementResponse.setMovement(null);
         } else if (movemnt.size() == 0) {
             movementResponse.setCodigoRespuesta(1);
-            movementResponse.setMensajeRespuesta("No existen clientes");
+            movementResponse.setMensajeRespuesta("No existen movimientos");
             movementResponse.setMovement(movemnt);
         } else {
             movementResponse.setCodigoRespuesta(0);
@@ -79,13 +80,20 @@ public class MovementResource {
     @DELETE
     @Path("{idMovement}")
     @Transactional
-    public Response delete(@PathParam("idMovement") Long idMovement) {
+    public ResponseBase delete(@PathParam("idMovement") Long idMovement) {
+        ResponseBase response = new ResponseBase();
         MovementEntity entity = service.findById(idMovement);
         if (entity == null) {
-            throw new WebApplicationException("Movement with id of " + idMovement + " does not exist.", 404);
+            response.setCodigoRespuesta(1);
+            response.setMensajeRespuesta("Id de movement no existe");
+            throw new WebApplicationException("movement with id of " + idMovement + " does not exist.", 404);
+        } else {
+            response.setCodigoRespuesta(0);
+            response.setMensajeRespuesta("Eliminacion exitosa de movement id = " + idMovement);
+            service.delete(entity.getIdMovement());
         }
-        service.delete(entity.getIdMovement());
-        return Response.status(204).build();
+
+        return response;
     }
 
     @PUT
