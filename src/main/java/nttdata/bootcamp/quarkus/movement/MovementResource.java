@@ -5,9 +5,12 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import nttdata.bootcamp.quarkus.movement.client.CreditCardClient;
 import nttdata.bootcamp.quarkus.movement.dto.MovementResponse;
+import nttdata.bootcamp.quarkus.movement.entity.CreditCardEntity;
 import nttdata.bootcamp.quarkus.movement.entity.MovementEntity;
 import nttdata.bootcamp.quarkus.movement.service.MovementService;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
 
 import java.util.List;
@@ -19,6 +22,9 @@ public class MovementResource {
     private static final Logger LOGGER = Logger.getLogger(MovementResource.class.getName());
     @Inject
     private MovementService service;
+
+    @RestClient
+    CreditCardClient creditCardClient;
     @GET
     public MovementResponse getMovements() {
         MovementResponse movementResponse = new MovementResponse();
@@ -51,6 +57,18 @@ public class MovementResource {
     @POST
     @Transactional
     public Response create(MovementEntity movement) {
+
+        if(movement.getIdTypeMovement() == 3){
+            CreditCardEntity entity = creditCardClient.viewClientDetails(movement.getCreditCard().getIdCreditCard());
+            double total= entity.getBalanceAvailable()-movement.getTotalMovement();
+            entity.setBalanceAvailable(total);
+            creditCardClient.updateCreditCard(entity.getIdCreditCard(),entity);
+        }else if(movement.getIdTypeMovement()== 2){
+            CreditCardEntity entity = creditCardClient.viewClientDetails(movement.getCreditCard().getIdCreditCard());
+            double total= entity.getBalanceAvailable()+movement.getTotalMovement();
+            entity.setBalanceAvailable(total);
+            creditCardClient.updateCreditCard(entity.getIdCreditCard(),entity);
+        }
 
         service.save(movement);
         return Response.ok(movement).status(201).build();
