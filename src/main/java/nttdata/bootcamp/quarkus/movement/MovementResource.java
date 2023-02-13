@@ -20,7 +20,7 @@ public class MovementResource {
     @Inject
     private MovementService service;
     @GET
-    public MovementResponse getClients() {
+    public MovementResponse getMovements() {
         MovementResponse movementResponse = new MovementResponse();
         List<MovementEntity>movemnt = service.listAll();
         if(movemnt==null){
