@@ -22,6 +22,7 @@ public class MovementEntity {
     private String descriptionMovement;
     private String dateMovement;
     private double totalMovement;
+    private int estateDelete;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idCreditCard")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

@@ -76,12 +76,11 @@ public class MovementResource {
         if (entity == null) {
             throw new WebApplicationException("Movent with id of " + idMovent + " does not exist.", 404);
         }
-
         entity.setIdTypeMovement(movent.getIdTypeMovement());
         entity.setDescriptionMovement(movent.getDescriptionMovement());
         entity.setDateMovement(movent.getDateMovement());
         entity.setTotalMovement(movent.getTotalMovement());
-
+        entity.setEstateDelete(movent.getEstateDelete());
         service.save(entity);
 
         return entity;

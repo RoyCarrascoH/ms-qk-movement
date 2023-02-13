@@ -18,7 +18,7 @@ public class CreditCardEntity {
     private Long idCreditCard;
     private String descripcion;
     private double creditLimit;
-    private String cardNumber;
+    private String creditCardNumber;
     private int cvv;
     private String expirationDate;
     private String closingDate;
