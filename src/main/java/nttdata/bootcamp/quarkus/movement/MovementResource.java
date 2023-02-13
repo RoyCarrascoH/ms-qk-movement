@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import nttdata.bootcamp.quarkus.movement.dto.MovementResponse;
 import nttdata.bootcamp.quarkus.movement.entity.MovementEntity;
 import nttdata.bootcamp.quarkus.movement.service.MovementService;
 import org.jboss.logging.Logger;
@@ -19,8 +20,24 @@ public class MovementResource {
     @Inject
     private MovementService service;
     @GET
-    public List<MovementEntity> getClients() {
-        return service.listAll();
+    public MovementResponse getClients() {
+        MovementResponse movementResponse = new MovementResponse();
+        List<MovementEntity>movemnt = service.listAll();
+        if(movemnt==null){
+            movementResponse.setCodigoRespuesta(2);
+            movementResponse.setMensajeRespuesta("Respuesta nula");
+            movementResponse.setMovement(null);
+        }
+        else if(movemnt.size()==0){
+            movementResponse.setCodigoRespuesta(1);
+            movementResponse.setMensajeRespuesta("No existen clientes");
+            movementResponse.setMovement(movemnt);
+        }else{
+            movementResponse.setCodigoRespuesta(0);
+            movementResponse.setMensajeRespuesta("Respuesta Exitosa");
+            movementResponse.setMovement(movemnt);
+        }
+        return movementResponse;
     }
     @GET
     @Path("{idMovement}")

@@ -1,0 +1,26 @@
+package nttdata.bootcamp.quarkus.movement.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Cacheable
+@Table(name = "CREDITCARD")
+public class CreditCardEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idCreditCard;
+    private String descripcion;
+    private double creditLimit;
+    private String cardNumber;
+    private int cvv;
+    private String expirationDate;
+    private String closingDate;
+    private String lastOfPay;
+}
